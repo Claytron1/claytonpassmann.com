@@ -1,0 +1,109 @@
+---
+import { existsSync } from 'node:fs';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { LINKS, RESUME_PATH } from '../consts';
+
+const hasResume = existsSync(`public${RESUME_PATH}`);
+
+// TODO: replace with your real skills.
+const skills = ['Skill one', 'Skill two', 'Skill three', 'Skill four', 'Skill five'];
+
+// TODO: replace with your real experience, most recent first.
+const experience = [
+	{
+		role: 'Job title',
+		org: 'Company',
+		dates: '2024 — Present',
+		summary: 'One or two sentences on what you did and the impact it had.',
+	},
+	{
+		role: 'Previous job title',
+		org: 'Previous company',
+		dates: '2021 — 2024',
+		summary: 'One or two sentences on what you did and the impact it had.',
+	},
+];
+---
+
+<BaseLayout title="About" description="About Clayton Passmann — background, skills, and experience.">
+	<h1>About</h1>
+
+	<p class="lede">
+		<span class="todo">TODO:</span> A short paragraph introducing yourself — what you do, what you care
+		about, and what kind of work you're looking for.
+	</p>
+
+	<p>
+		<span class="todo">TODO:</span> A second paragraph with a bit more personality: how you got here, what
+		you're learning right now, what you do outside of work.
+	</p>
+
+	<div class="button-row">
+		{hasResume && <a class="button" href={RESUME_PATH}>Download resume (PDF)</a>}
+		{LINKS.email && <a class="button secondary" href={`mailto:${LINKS.email}`}>Get in touch</a>}
+		{LINKS.linkedin && <a class="button secondary" href={LINKS.linkedin}>LinkedIn</a>}
+	</div>
+
+	<h2>Skills</h2>
+	<ul class="tags">{skills.map((s) => <li>{s}</li>)}</ul>
+
+	<h2>Experience</h2>
+	<ol class="timeline">
+		{
+			experience.map((job) => (
+				<li>
+					<div class="head">
+						<h3>
+							{job.role} <span class="muted">· {job.org}</span>
+						</h3>
+						<span class="dates muted">{job.dates}</span>
+					</div>
+					<p>{job.summary}</p>
+				</li>
+			))
+		}
+	</ol>
+</BaseLayout>
+
+<style>
+	.button-row {
+		margin-top: 2rem;
+	}
+	.tags li {
+		font-size: 0.9rem;
+		padding: 0.25rem 0.75rem;
+	}
+	.timeline {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		border-left: 2px solid var(--border);
+	}
+	.timeline li {
+		position: relative;
+		padding: 0 0 1.75rem 1.5rem;
+	}
+	.timeline li::before {
+		content: '';
+		position: absolute;
+		left: -6px;
+		top: 0.45rem;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: var(--accent);
+	}
+	.head {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 0 1rem;
+		align-items: baseline;
+	}
+	.dates {
+		font-size: 0.9rem;
+	}
+	.timeline p {
+		margin: 0.35rem 0 0;
+	}
+</style>

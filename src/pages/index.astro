@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import PostList from '../components/PostList.astro';
+import { TAGLINE } from '../consts';
+import { getPosts, getProjects } from '../lib/content';
+
+const featured = (await getProjects()).filter((p) => p.data.featured).slice(0, 3);
+const latest = (await getPosts()).slice(0, 3);
+---
+
+<BaseLayout>
+	<section class="hero">
+		<h1>Hi, I'm Clayton.</h1>
+		<p class="lede">{TAGLINE}</p>
+		<div class="button-row">
+			<a class="button" href="/about/">About me</a>
+			<a class="button secondary" href="/blog/">Read the blog</a>
+		</div>
+	</section>
+
+	{
+		featured.length > 0 && (
+			<section>
+				<div class="section-head">
+					<h2>Featured projects</h2>
+					<a href="/projects/">All projects →</a>
+				</div>
+				<div class="grid">
+					{featured.map((project) => (
+						<ProjectCard project={project} />
+					))}
+				</div>
+			</section>
+		)
+	}
+
+	{
+		latest.length > 0 && (
+			<section>
+				<div class="section-head">
+					<h2>Latest writing</h2>
+					<a href="/blog/">All posts →</a>
+				</div>
+				<PostList posts={latest} />
+			</section>
+		)
+	}
+</BaseLayout>
+
+<style>
+	.hero {
+		padding-block: 2rem 1rem;
+	}
+	.grid {
+		display: grid;
+		gap: 1rem;
+	}
+</style>
