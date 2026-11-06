@@ -16,3 +16,7 @@ export const LINKS = {
 
 // Put your resume at public/resume.pdf to enable the download button.
 export const RESUME_PATH = '/resume.pdf';
+
+// Optional one-line status shown under the homepage intro, e.g.
+// 'Open to data science roles in Chicago or remote.' Leave '' to hide it.
+export const STATUS = 'TODO: Open to new roles — say what kind and where.';

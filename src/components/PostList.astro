@@ -4,18 +4,23 @@ import FormattedDate from './FormattedDate.astro';
 
 interface Props {
 	posts: CollectionEntry<'blog'>[];
+	/** Show each post's description under its title. */
+	descriptions?: boolean;
 }
 
-const { posts } = Astro.props;
+const { posts, descriptions = true } = Astro.props;
 ---
 
 <ul>
 	{
 		posts.map((post) => (
 			<li>
-				<a href={`/blog/${post.id}/`}>{post.data.title}</a>
-				<FormattedDate date={post.data.pubDate} />
-				<p class="muted">{post.data.description}</p>
+				<div class="head">
+					<a href={`/blog/${post.id}/`}>{post.data.title}</a>
+					<span class="leader" aria-hidden="true" />
+					<FormattedDate date={post.data.pubDate} />
+				</div>
+				{descriptions && <p class="muted">{post.data.description}</p>}
 			</li>
 		))
 	}
@@ -26,34 +31,37 @@ const { posts } = Astro.props;
 		list-style: none;
 		padding: 0;
 		margin: 0;
-	}
-	li {
-		padding-block: 1rem;
-		border-bottom: 1px solid var(--border);
 		display: grid;
-		grid-template-columns: 1fr auto;
-		gap: 0.15rem 1rem;
-		align-items: baseline;
+		gap: 1.25rem;
 	}
-	li:first-child {
-		padding-top: 0;
+	.head {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75rem;
 	}
 	a {
-		font-weight: 600;
-		color: var(--text);
+		font-family: var(--serif);
+		font-size: 1.15rem;
 		text-decoration: none;
 	}
 	a:hover {
 		color: var(--accent);
 	}
+	.leader {
+		flex: 1;
+		min-width: 1.5rem;
+		border-bottom: 1px dotted var(--faint);
+		opacity: 0.6;
+		transform: translateY(-0.3em);
+	}
 	li :global(time) {
 		font-size: 0.85rem;
-		color: var(--muted);
+		color: var(--faint);
 		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
 	}
 	p {
-		grid-column: 1 / -1;
-		margin: 0;
+		margin: 0.2rem 0 0;
 		font-size: 0.95rem;
 	}
 </style>

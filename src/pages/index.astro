@@ -1,36 +1,53 @@
 ---
+import { existsSync } from 'node:fs';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import ProjectList from '../components/ProjectList.astro';
 import PostList from '../components/PostList.astro';
-import { TAGLINE } from '../consts';
+import { TAGLINE, STATUS, LINKS, RESUME_PATH } from '../consts';
 import { getPosts, getProjects } from '../lib/content';
 
-const featured = (await getProjects()).filter((p) => p.data.featured).slice(0, 3);
+const featured = (await getProjects()).filter((p) => p.data.featured).slice(0, 4);
 const latest = (await getPosts()).slice(0, 3);
+
+const contact = [
+	existsSync(`public${RESUME_PATH}`) && { href: RESUME_PATH, label: 'Résumé' },
+	LINKS.email && { href: `mailto:${LINKS.email}`, label: 'Email' },
+	LINKS.linkedin && { href: LINKS.linkedin, label: 'LinkedIn' },
+	LINKS.github && { href: LINKS.github, label: 'GitHub' },
+	{ href: '/about/', label: 'About me' },
+].filter(Boolean) as { href: string; label: string }[];
 ---
 
 <BaseLayout>
 	<section class="hero">
 		<h1>Hi, I'm Clayton.</h1>
-		<p class="lede">{TAGLINE}</p>
-		<div class="button-row">
-			<a class="button" href="/about/">About me</a>
-			<a class="button secondary" href="/blog/">Read the blog</a>
-		</div>
+		<p class="intro">{TAGLINE}</p>
+		{
+			STATUS && (
+				<p class="status">
+					<span class="dot" aria-hidden="true" />
+					{STATUS}
+				</p>
+			)
+		}
+		<ul class="inline-links">
+			{
+				contact.map(({ href, label }) => (
+					<li>
+						<a href={href}>{label}</a>
+					</li>
+				))
+			}
+		</ul>
 	</section>
 
 	{
 		featured.length > 0 && (
 			<section>
-				<div class="section-head">
-					<h2>Featured projects</h2>
-					<a href="/projects/">All projects →</a>
-				</div>
-				<div class="grid">
-					{featured.map((project) => (
-						<ProjectCard project={project} />
-					))}
-				</div>
+				<h2 class="label">
+					Selected work <a href="/projects/">All projects →</a>
+				</h2>
+				<ProjectList projects={featured} />
 			</section>
 		)
 	}
@@ -38,22 +55,37 @@ const latest = (await getPosts()).slice(0, 3);
 	{
 		latest.length > 0 && (
 			<section>
-				<div class="section-head">
-					<h2>Latest writing</h2>
-					<a href="/blog/">All posts →</a>
-				</div>
-				<PostList posts={latest} />
+				<h2 class="label">
+					Writing <a href="/blog/">All posts →</a>
+				</h2>
+				<PostList posts={latest} descriptions={false} />
 			</section>
 		)
 	}
 </BaseLayout>
 
 <style>
-	.hero {
-		padding-block: 2rem 1rem;
+	.intro {
+		font-family: var(--serif);
+		font-size: clamp(1.25rem, 3.5vw, 1.45rem);
+		line-height: 1.5;
+		margin: 0 0 1.5rem;
 	}
-	.grid {
-		display: grid;
-		gap: 1rem;
+	.status {
+		display: flex;
+		align-items: baseline;
+		gap: 0.6rem;
+		margin: 0 0 1.5rem;
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+	.dot {
+		flex: none;
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 50%;
+		background: var(--accent);
+		box-shadow: 0 0 0 3px var(--accent-soft);
+		transform: translateY(-0.1em);
 	}
 </style>

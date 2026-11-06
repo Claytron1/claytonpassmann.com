@@ -6,8 +6,8 @@ import { getPosts } from '../../lib/content';
 const posts = await getPosts();
 ---
 
-<BaseLayout title="Blog" description="Writing by Clayton Passmann.">
-	<h1>Blog</h1>
+<BaseLayout title="Writing" description="Writing by Clayton Passmann.">
+	<h1>Writing</h1>
 	<p class="lede">Notes, ideas, and things I've learned. <a href="/rss.xml">Subscribe via RSS</a>.</p>
 	<PostList posts={posts} />
 </BaseLayout>
